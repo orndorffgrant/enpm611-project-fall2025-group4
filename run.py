@@ -9,6 +9,7 @@ import argparse
 
 import config
 from example_analysis import ExampleAnalysis
+from completion_analysis import CompletionAnalysis
 
 
 def parse_args():
@@ -50,7 +51,7 @@ if args.feature == 0:
 elif args.feature == 1:
     pass # TODO call first analysis
 elif args.feature == 2:
-    pass # TODO call second analysis
+    CompletionAnalysis().run()
 elif args.feature == 3:
     pass # TODO call third analysis
 else:
