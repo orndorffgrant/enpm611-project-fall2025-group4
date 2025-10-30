@@ -39,15 +39,6 @@ def parse_args():
     # Optional parameter for analyses focusing on issues created after a specific date (Feature 2)
     ap.add_argument('--since', type=str, required=False,
                     help='Filter issues created on or after this date (YYYY-MM or YYYY-MM-DD)')
-    
-    # Optional parameter to run only the open-issue aging analysis (Feature 2)
-    ap.add_argument('--only-open', action='store_true',
-                    help='Run only the open-issue aging analysis for Feature 2')
-    
-    # Optional parameter to run only the closed-issue completion time analysis (Feature 2)
-    ap.add_argument('--only-closed', action='store_true',
-                    help='Run only the closed-issue completion time analysis for Feature 2')
-
 
     return ap.parse_args()
 
