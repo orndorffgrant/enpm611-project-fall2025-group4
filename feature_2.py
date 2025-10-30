@@ -87,13 +87,8 @@ class CompletionAnalysis:
             items = [i for i in items if self.label_filter in _labels(i)]
         if self.since:
             start = pd.to_datetime(self.since, utc=True, errors="coerce")
-            if start is not None and not pd.isna(start):
-                kept = []
-                for i in items:
-                    c = _created_at(i)
-                    if c and c >= start.to_pydatetime():
-                        kept.append(i)
-                items = kept
+            if not pd.isna(start):
+                items = [i for i in items if (c := _created_at(i)) and c >= start.to_pydatetime()]
         return items
 
     def _completion_days(self, issue: Issue) -> Optional[float]:
@@ -155,23 +150,18 @@ class CompletionAnalysis:
         print(f"Median time-to-close: {median:.1f} d  |  Mean: {mean:.1f} d  |  P90: {p90:.1f} d")
 
         # fastest / slowest labels (sample ≥ 3)
-        lbl_rows = []
-        for _, r in df.iterrows():
-            for lab in r["labels"]:
-                lbl_rows.append({"label": lab, "completion_time": r["completion_time"]})
-        if lbl_rows:
-            lbl_df = pd.DataFrame(lbl_rows)
-            stats = (
-                lbl_df.groupby("label")["completion_time"]
-                .agg(["median", "count"])
-                .query("count >= 3")
-                .sort_values("median", ascending=True)
-            )
-            if not stats.empty:
-                fastest = stats.iloc[0]
-                slowest = stats.iloc[-1]
-                print(f"Fastest label: {stats.index[0]} ({fastest['median']:.1f} d, n={int(fastest['count'])})")
-                print(f"Slowest label: {stats.index[-1]} ({slowest['median']:.1f} d, n={int(slowest['count'])})")
+        lbl_df = df[["labels", "completion_time"]].explode("labels")
+        stats = (
+            lbl_df.groupby("labels")["completion_time"]
+            .agg(["median", "count"])
+            .query("count >= 3")
+            .sort_values("median", ascending=True)
+        )
+        if not stats.empty:
+            fastest = stats.iloc[0]
+            slowest = stats.iloc[-1]
+            print(f"Fastest label: {stats.index[0]} ({fastest['median']:.1f} d, n={int(fastest['count'])})")
+            print(f"Slowest label: {stats.index[-1]} ({slowest['median']:.1f} d, n={int(slowest['count'])})")
 
         # month (by closed date) medians: overall + top 3 labels
         if df["closed_at"].isna().all():
@@ -188,23 +178,21 @@ class CompletionAnalysis:
         )
 
         # top 3 labels by closed appearances
-        label_counts = pd.Series([lab for labs in df["labels"] for lab in labs]).value_counts()
+        label_counts = lbl_df["labels"].value_counts()
         top_labels = label_counts.head(3).index.tolist()
 
-        label_lines = pd.DataFrame()
         if top_labels:
-            rows2 = []
-            for _, r in df.iterrows():
-                for lab in r["labels"]:
-                    if lab in top_labels:
-                        rows2.append({"label": lab, "closed_month": r["closed_month"], "completion_time": r["completion_time"]})
-            if rows2:
-                label_lines = (
-                    pd.DataFrame(rows2)
-                    .groupby(["label", "closed_month"])["completion_time"]
-                    .median()
-                    .reset_index()
-                )
+            # Recreate lbl_df with closed_month for monthly analysis
+            lbl_df_monthly = df[["labels", "closed_month", "completion_time"]].explode("labels")
+            label_lines = (
+                lbl_df_monthly[lbl_df_monthly["labels"].isin(top_labels)]
+                .groupby(["labels", "closed_month"])["completion_time"]
+                .median()
+                .reset_index()
+                .rename(columns={"labels": "label"})
+            )
+        else:
+            label_lines = pd.DataFrame()
 
         self._plot_monthly_medians(overall, label_lines)
         return {"completion_df": df, "summary": {"count": len(df), "median": median, "mean": mean, "p90": p90}}
