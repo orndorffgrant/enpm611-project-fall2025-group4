@@ -9,7 +9,7 @@ import argparse
 
 import config
 from example_analysis import ExampleAnalysis
-from completion_analysis import CompletionAnalysis
+from feature_2 import CompletionAnalysis
 
 
 def parse_args():
