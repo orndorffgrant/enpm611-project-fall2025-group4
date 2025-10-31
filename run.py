@@ -9,6 +9,7 @@ import argparse
 
 import config
 from example_analysis import ExampleAnalysis
+from triage_time_analysis import TriageTimeAnalysis
 
 
 def parse_args():
@@ -35,6 +36,8 @@ def parse_args():
     ap.add_argument('--label', '-l', type=str, required=False,
                     help='Optional parameter for analyses focusing on a specific label')
     
+    ap.add_argument('--show-plot', action='store_true', help='Show plots when available')
+
     return ap.parse_args()
 
 
@@ -52,6 +55,6 @@ elif args.feature == 1:
 elif args.feature == 2:
     pass # TODO call second analysis
 elif args.feature == 3:
-    pass # TODO call third analysis
+    TriageTimeAnalysis().triage_time_analysis(show_plot=args.show_plot)
 else:
     print('Need to specify which feature to run with --feature flag.')
