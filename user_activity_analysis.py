@@ -18,6 +18,8 @@ class UserActivityAnalysis:
         """
         # Parameter is passed in via command line (--user)
         self._user: str = config.get_parameter('user')
+        if config.get_parameter('label'):
+            raise RuntimeError("--label flag is not supported for feature 1")
         
     def _event_to_year_month(self, e):
         return f"{e["event_date"].year}-{e["event_date"].month:02d}"
@@ -103,6 +105,7 @@ class UserActivityAnalysis:
         )
         ax1.legend(ncols=2, reverse=True)
         ax1.set_title("Activity Area")
+        ax1.set_ylabel("Action Count")
         
         ax2.stackplot(
             year_month_bucket_list,
@@ -113,6 +116,7 @@ class UserActivityAnalysis:
         ax2.legend(reverse=True)
         ax2.set_title("Activity Kind")
         ax2.set_xlabel("Year Month")
+        ax2.set_ylabel("Action Count")
         ax2.tick_params(axis="x", rotation=90)
         
         plt.show()
