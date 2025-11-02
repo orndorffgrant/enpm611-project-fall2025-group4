@@ -2,7 +2,6 @@ from typing import List, Optional
 import matplotlib.pyplot as plt
 import pandas as pd
 from datetime import timedelta
-
 from data_loader import DataLoader
 from model import Issue, Event
 import config
@@ -12,14 +11,11 @@ class TriageTimeAnalysis:
         self.USER: Optional[str] = config.get_parameter("user")
 
     def run(self):
-        issues: List[Issue] = DataLoader().get_issues()
-        total_events = sum(len([e for e in issue.events if self.USER is None or e.author == self.USER]) for issue in issues)
-        output = f"Found {total_events} events across {len(issues)} issues"
-        if self.USER is not None:
-            output += f" for {self.USER}."
-        else:
-            output += "."
-        print("\n\n" + output + "\n\n")
+        """
+        Main entry point for triage time analysis.
+        Calls triage_time_analysis with show_plot=True by default.
+        """
+        self.triage_time_analysis(show_plot=True)
 
     def _first_assignment_event(self, issue: Issue) -> Optional[Event]:
         created = issue.created_date
@@ -30,7 +26,8 @@ class TriageTimeAnalysis:
             if not getattr(e, "event_type", None):
                 continue
             et = str(e.event_type).strip().lower()
-            if et in ("assigned", "assign", "assignment", "status_change", "state_change"):
+            if et in ("assigned", "assign", "assignment", "status_change",
+                      "state_change"):
                 return e
             if (getattr(e, "label", None) and "assign" in str(e.label).lower()) or \
                (getattr(e, "comment", None) and "assign" in str(e.comment).lower()):
@@ -74,6 +71,7 @@ class TriageTimeAnalysis:
             "max_days": float(df["triage_days"].max()),
             "std_days": float(df["triage_days"].std())
         }
+
         print("Triage time summary (days):")
         for k, v in summary.items():
             print(f"  {k}: {v}")
@@ -88,7 +86,8 @@ class TriageTimeAnalysis:
             plt.show()
 
         return df
-    
+
+
 if __name__ == "__main__":
     t = TriageTimeAnalysis()
     t.run()
