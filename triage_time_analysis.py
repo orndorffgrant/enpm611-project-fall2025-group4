@@ -25,12 +25,10 @@ class TriageTimeAnalysis:
         for e in sorted_events:
             if not getattr(e, "event_type", None):
                 continue
-            et = str(e.event_type).strip().lower()
-            if et in ("assigned", "assign", "assignment", "status_change",
-                      "state_change"):
+            et = e.event_type
+            if et == "assigned":
                 return e
-            if (getattr(e, "label", None) and "assign" in str(e.label).lower()) or \
-               (getattr(e, "comment", None) and "assign" in str(e.comment).lower()):
+            if e.comment and "assign" in e.comment.lower():
                 return e
         return None
 
