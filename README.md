@@ -46,7 +46,7 @@ python run.py --feature 1 --user sdispater
 
 #### Feature 2: Completion Time Analysis
 
-TODO
+The completion time analysis feature computes the time-to-close for closed issues only and outputs a single chart showing the monthly median completion time overall and for the top three most frequently closed labels. It also prints a brief summary with the total number of closed issues analyzed, median, mean, P90 closure time, and, where sample size allows (n ≥ 3), the fastest and slowest labels. This helps highlight resolution speed trends and label-specific bottlenecks without including open or incomplete data.
 
 Examples:
 ```
