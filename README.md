@@ -33,14 +33,37 @@ Download the data file (in `json` format) from the project assignment in Canvas 
 
 ### Run an analysis
 
-With everything set up, you should be able to run the existing example analysis:
+With everything set up, you should be able to run the example analyses:
 
+#### Feature 1: User Activity Analysis
+
+The user activity analysis requires a user to be specified. It buckets activity for the user by month and classifies it by two methods, "kind" and "area", each defined by the labels used on the issue related to the activity. Every event on an issue, including opening the issue is counted as an action. The activity counts are displayed as two chronological stackplots with synced axes.
+
+Example:
 ```
-python run.py --feature 0
+python run.py --feature 1 --user sdispater
 ```
 
-That will output basic information about the issues to the command line.
+#### Feature 2: Completion Time Analysis
 
+TODO
+
+Examples:
+```
+python run.py --feature 2
+python run.py --feature 2 --since 2024-01
+python run.py --feature 2 --user abn
+python run.py --feature 2 --label kind/bug
+```
+
+#### Feature 3: Triage Time Analysis
+
+TODO
+
+Example:
+```
+python run.py --feature 3
+```
 
 ## VSCode run configuration
 
