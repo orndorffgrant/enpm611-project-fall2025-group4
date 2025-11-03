@@ -7,7 +7,7 @@ Feature 2: Issue Completion Time Analysis (Focused)
 """
 
 from typing import List, Dict, Optional, Any
-from datetime import datetime, timezone
+from datetime import datetime
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -19,32 +19,12 @@ import config
 
 # ----------------------------- helpers ------------------------------------ #
 
-def _to_utc_dt(x: Any) -> Optional[datetime]:
-    if x is None:
-        return None
-    if isinstance(x, datetime):
-        return x if x.tzinfo else x.replace(tzinfo=timezone.utc)
-    ts = pd.to_datetime(str(x), utc=True, errors="coerce")
-    if pd.isna(ts):
-        return None
-    return ts.to_pydatetime()
-
-def _created_at(issue: Issue) -> Optional[datetime]:
-    """Get created date from issue."""
-    return _to_utc_dt(issue.created_date) if issue.created_date else None
-
-def _updated_at(issue: Issue) -> Optional[datetime]:
-    """Get updated date from issue."""
-    return _to_utc_dt(issue.updated_date) if issue.updated_date else None
-
 def _closed_at_from_events(issue: Issue) -> Optional[datetime]:
     """Find closed date from events."""
     cands = []
     for e in issue.events:
         if e.event_type and e.event_type.lower() == "closed" and e.event_date:
-            ts = _to_utc_dt(e.event_date)
-            if ts:
-                cands.append(ts)
+            cands.append(e.event_date)
     return max(cands) if cands else None
 
 def _closed_at(issue: Issue) -> Optional[datetime]:
@@ -54,7 +34,7 @@ def _closed_at(issue: Issue) -> Optional[datetime]:
         return ts
     # Fallback: if issue is closed, use updated_date
     if issue.state == State.closed:
-        return _updated_at(issue)
+        return issue.updated_date
     return None
 
 def _labels(issue: Issue) -> List[str]:
@@ -88,17 +68,17 @@ class CompletionAnalysis:
         if self.since:
             start = pd.to_datetime(self.since, utc=True, errors="coerce")
             if not pd.isna(start):
-                items = [i for i in items if (c := _created_at(i)) and c >= start.to_pydatetime()]
+                items = [i for i in items if i.created_date and i.created_date >= start.to_pydatetime()]
         return items
 
     def _completion_days(self, issue: Issue) -> Optional[float]:
         if issue.state != State.closed:
             return None
-        c0 = _created_at(issue)
+        c0 = issue.created_date
         c1 = _closed_at(issue)
         if not c0 or not c1:
             return None
-        d = (c1 - c0).total_seconds() / 86400.0
+        d = (c1 - c0).days
         return d if d >= 0 else None
 
     def run(self) -> Dict[str, Any]:
