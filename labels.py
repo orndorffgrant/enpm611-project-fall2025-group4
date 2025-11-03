@@ -1,0 +1,66 @@
+AREA_LABELS = [
+    "area/auth",
+    "area/build-system",
+    "area/ci",
+    "area/cli",
+    "area/config",
+    "area/core",
+    "area/deps",
+    "area/distribution",
+    "area/docs",
+    "area/docs/faq",
+    "area/error-handling",
+    "area/init",
+    "area/installer",
+    "area/peps",
+    "area/plugin-api",
+    "area/project",
+    "area/project/deps",
+    "area/publishing",
+    "area/pyproject",
+    "area/python",
+    "area/repo",
+    "area/shell",
+    "area/show",
+    "area/solver",
+    "area/sources",
+    "area/testing",
+    "area/ux",
+    "area/vcs",
+    "area/venv",
+    "area/windows",
+]
+OTHER_LABELS = [
+    "good first issue",
+]
+IMPACT_LABELS = [
+    "impact/deprecation",
+]
+KIND_LABELS = [
+    "kind/bug",
+    "kind/enhancement",
+    "kind/feature",
+    "kind/question",
+    "kind/refactor",
+    "kind/release",
+]
+STATUS_LABELS = [
+    "status/accepted",
+    "status/confirmed",
+    "status/duplicate",
+    "status/external-issue",
+    "status/invalid",
+    "status/needs-attention",
+    "status/needs-consensus",
+    "status/needs-reproduction",
+    "status/triage",
+    "status/waiting-on-core",
+    "status/waiting-on-response",
+    "status/wontfix",
+]
+VERSION_LABELS = [
+    "version/1.2.0",
+    "version/1.2.1",
+    "version/1.2.2",
+    "version/1.3.1",
+]
