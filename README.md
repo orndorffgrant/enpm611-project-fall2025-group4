@@ -33,7 +33,7 @@ Download the data file (in `json` format) from the project assignment in Canvas 
 
 ### Run an analysis
 
-With everything set up, you should be able to run the example analyses:
+With everything set up, you should be able to run the analyses:
 
 #### Feature 1: User Activity Analysis
 
