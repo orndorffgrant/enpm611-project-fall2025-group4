@@ -8,8 +8,9 @@ import config
 
 class TriageTimeAnalysis:
     def __init__(self):
-        self.USER: Optional[str] = config.get_parameter("user")
-
+        if config.get_parameter("user") or config.get_parameter("label"):
+            raise RuntimeError("This analysis does not support the 'user' or 'label' flags")
+        
     def run(self):
         """
         Main entry point for triage time analysis.
