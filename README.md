@@ -58,7 +58,7 @@ python run.py --feature 2 --label kind/bug
 
 #### Feature 3: Triage Time Analysis
 
-TODO
+The triage time analysis feature computes the time taken for triaging of created issues, in terms of days it takes for an issue to be picked up for implementation. It outputs a single chart showing the number of issues triaged against the time taken for the issue status to be updated. It also prints a brief summary of the triage times from the issues analyzed, including median, mean, min, max, and std times (in days).
 
 Example:
 ```
