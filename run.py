@@ -8,6 +8,7 @@ the command line to run the analyses.
 import argparse
 
 import config
+from completion_time_analysis import CompletionAnalysis
 from triage_time_analysis import TriageTimeAnalysis
 from user_activity_analysis import UserActivityAnalysis
 
@@ -35,7 +36,11 @@ def parse_args():
     # Optional parameter for analyses focusing on a specific label
     ap.add_argument('--label', '-l', type=str, required=False,
                     help='Optional parameter for analyses focusing on a specific label')
-    
+                
+    # Optional parameter for analyses focusing on issues created after a specific date (Feature 2)
+    ap.add_argument('--since', type=str, required=False,
+                    help='Filter issues created on or after this date (YYYY-MM or YYYY-MM-DD)')
+
     return ap.parse_args()
 
 
@@ -49,7 +54,7 @@ config.overwrite_from_args(args)
 if args.feature == 1:
     UserActivityAnalysis().run()
 elif args.feature == 2:
-    pass # TODO call second analysis
+    CompletionAnalysis().run()
 elif args.feature == 3:
     TriageTimeAnalysis().run()
 else:
