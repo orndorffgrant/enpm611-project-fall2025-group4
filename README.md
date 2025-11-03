@@ -33,14 +33,37 @@ Download the data file (in `json` format) from the project assignment in Canvas 
 
 ### Run an analysis
 
-With everything set up, you should be able to run the existing example analysis:
+With everything set up, you should be able to run the analyses:
 
+#### Feature 1: User Activity Analysis
+
+The user activity analysis requires a user to be specified. It buckets activity for the user by month and classifies it by two methods, "kind" and "area", each defined by the labels used on the issue related to the activity. Every event on an issue, including opening the issue is counted as an action. The activity counts are displayed as two chronological stackplots with synced axes.
+
+Example:
 ```
-python run.py --feature 0
+python run.py --feature 1 --user sdispater
 ```
 
-That will output basic information about the issues to the command line.
+#### Feature 2: Completion Time Analysis
 
+The completion time analysis feature computes the time-to-close for closed issues only and outputs a single chart showing the monthly median completion time overall and for the top three most frequently closed labels. It also prints a brief summary with the total number of closed issues analyzed, median, mean, P90 closure time, and, where sample size allows (n ≥ 3), the fastest and slowest labels. This helps highlight resolution speed trends and label-specific bottlenecks without including open or incomplete data.
+
+Examples:
+```
+python run.py --feature 2
+python run.py --feature 2 --since 2024-01
+python run.py --feature 2 --user abn
+python run.py --feature 2 --label kind/bug
+```
+
+#### Feature 3: Triage Time Analysis
+
+The triage time analysis feature computes the time taken for triaging of created issues, in terms of days it takes for an issue to be picked up for implementation. It outputs a single chart showing the number of issues triaged against the time taken for the issue status to be updated. It also prints a brief summary of the triage times from the issues analyzed, including median, mean, min, max, and std times (in days).
+
+Example:
+```
+python run.py --feature 3
+```
 
 ## VSCode run configuration
 
